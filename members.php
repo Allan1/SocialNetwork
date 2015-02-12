@@ -2,7 +2,7 @@
   require_once 'header.php';
 
   if (!$loggedin) {
-    header("Location: http://".$_SERVER['SERVER_NAME']."/social-network/index.php");
+    header("Location: index.php");
     die();
   }
 

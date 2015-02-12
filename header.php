@@ -1,3 +1,6 @@
+<?php // Example 26-2: header.php
+  ob_start();
+  ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,7 +66,7 @@ label {
 }
 </style>
 <?php // Example 26-2: header.php
-  ob_start();
+  
 
   session_start();
 

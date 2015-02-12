@@ -26,6 +26,9 @@ require_once 'header.php';
     $user = sanitizeString($_POST['user']);
     $pass = sanitizeString($_POST['pass']);
     $passConf = sanitizeString($_POST['passConf']);
+    $birth = $_POST['birth'];
+    $email = $_POST['email'];
+    $city  = sanitizeString($_POST['city']);
 
     if ($user == "" || $pass == "")
       $error = "Not all fields were entered.<br><br>";
@@ -40,7 +43,8 @@ require_once 'header.php';
         $error = "That username already exists<br><br>";
       else
       {
-        queryMysql("INSERT INTO members VALUES('$user', '$pass')");
+
+        queryMysql("INSERT INTO members VALUES('$user', '$pass','$email','$birth','$city')");
         die("<h4>Account created</h4>Please Log in.<br><br>");
       }
     }
@@ -60,7 +64,12 @@ require_once 'header.php';
     <input id='formPassConf' type='password' maxlength='16' name='passConf'
     value='$pass'>
     <span id='infoPassConf'></span><br>
-    <span class='fieldname'>&nbsp;</span>
+    <span class='fieldname'>Birthdate</span>
+    <input id='birth' type='date' name='birth'><br>
+    <span class='fieldname'>Email</span>
+    <input id='email' type='text' placeholder="email@example.com" name='email'><br>
+    <span class='fieldname'>City</span>
+    <input id='city' type='text' name='city'><br>
     <input id='formSubmit' type='submit' value='Sign up' disabled>
   </form>
 </div><br>

@@ -22,13 +22,15 @@
         $_SESSION['user'] = $user;
         $_SESSION['pass'] = $pass;
         $_SESSION['message'] = "You are now logged in.";
-        header("Location: http://".$_SERVER['SERVER_NAME']."/social-network/members.php?view=$user");
+        ob_clean();
+        header("Location: members.php?view=$user");
+        
         die();
         //die("You are now logged in. Please <a href='members.php?view=$user'>" ."click here</a> to continue.<br><br>");
       }
     }
   }
-  header("Location: http://".$_SERVER['SERVER_NAME']."/social-network/index.php");
+  header("Location: index.php");
   die();
 ?>
   </body>
