@@ -12,7 +12,10 @@
 
   createTable('members',
               'user VARCHAR(16),
-              pass VARCHAR(16),
+              pass VARCHAR(255),
+              email VARCHAR(16),
+              birth DATE,
+              city VARCHAR(15),
               INDEX(user(6))');
 
   createTable('messages', 
