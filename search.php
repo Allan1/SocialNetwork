@@ -57,8 +57,8 @@
           $u = $row['user'];
           $pic_path = PROFILE_PICS_PATH.$u.'.jpg';
           if (file_exists($pic_path))
-            echo "<li><img src='$pic_path' style='float:left;width:40px;height:40px'>";
-          echo "<a href='members.php?view=".$u."'>".$u."</a></li>"; 
+            echo "<li><img src='$pic_path' style='float:left;width:40px;height:40px'><a href='members.php?view=".$u."'>".$u."</a></li>";
+          //echo "<a href='members.php?view=".$u."'>".$u."</a></li>"; 
         }
         echo "</ul>";
 
