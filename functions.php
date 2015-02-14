@@ -2,7 +2,7 @@
   $dbhost  = 'localhost';       // Unlikely to require changing
   $dbname  = 'social';           // Modify these...
   $dbuser  = 'root';           // ...variables according
-  $dbpass  = 'root';           // ...to your installation
+  $dbpass  = '';           // ...to your installation
   $appname = "Social Network";  // ...and preference
   define('DS', '/');
   define("IMG_PATH", 'img'.DS);

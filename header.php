@@ -100,13 +100,12 @@ label {
 
     <?php if($loggedin): ?>
       <ul class='menu'>
-      <?php echo "<li><a href='members.php?view=$user'>Home</a></li>";?>
-
-         <li><a href='members.php'>Members</a></li>
-         <li><a href='friends.php'>Friends</a></li>
-         <li><a href='messages.php'>Messages</a></li>
-         <li><a href='profile.php'>Edit Profile</a></li>
-         <li><a href='logout.php'>Log out</a></li>
+        <li><a href='home.php'>Home</a></li>
+        <li><a href='members.php'>Members</a></li>
+        <li><a href='friends.php'>Friends</a></li>
+        <li><a href='messages.php'>Messages</a></li>
+        <li><a href='profile.php'>Edit Profile</a></li>
+        <li><a href='logout.php'>Log out</a></li>
       </ul>
     <?php else: ?>
       <div class="login">

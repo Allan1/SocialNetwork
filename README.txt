@@ -29,3 +29,4 @@ Messages: if roll (hue hue hue)
 Database changes: New Email field on members table (so the user can retrieve passoword if lost)
 				  Encrypt password field on members table
 				  
+#Bugs

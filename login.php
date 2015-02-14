@@ -23,7 +23,7 @@
         $_SESSION['pass'] = $pass;
         $_SESSION['message'] = "You are now logged in.";
         ob_clean();
-        header("Location: members.php?view=$user");
+        header("Location: home.php");
         
         die();
         //die("You are now logged in. Please <a href='members.php?view=$user'>" ."click here</a> to continue.<br><br>");
