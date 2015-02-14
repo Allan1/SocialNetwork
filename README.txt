@@ -11,12 +11,13 @@
 #security issues
 	*sql injection
 
-* -> TODO
-
 Home: Create a "Home.php"
 	  Display the user photo
 	  Messages posted by users followed by you
 	  Display "What are you thinking?" box (post messages)
+
+* -> TODO
+
 
 
 Members: Search box
