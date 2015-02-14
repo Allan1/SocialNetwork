@@ -23,6 +23,8 @@ require_once 'header.php';
 
   if (isset($_POST['user']))
   {
+    $first_name = sanitizeString($_POST['first_name']);
+    $last_name = sanitizeString($_POST['last_name']);
     $user = sanitizeString($_POST['user']);
     $pass = sanitizeString($_POST['pass']);
     $passConf = sanitizeString($_POST['passConf']);
@@ -44,7 +46,7 @@ require_once 'header.php';
       else
       {
 
-        queryMysql("INSERT INTO members VALUES('$user', '$pass','$email','$birth','$city')");
+        queryMysql("INSERT INTO members VALUES('$user', '$pass','$first_name','$last_name','$email','$birth','$city')");
         die("<h4>Account created</h4>Please Log in.<br><br>");
       }
     }
@@ -53,6 +55,12 @@ require_once 'header.php';
   echo <<<_END
   <div class='main'><h3>Not an user yet? Please enter your details to sign up.</h3>
   <form method='post' action='index.php'>$error
+    <span class='fieldname'>First Name</span>
+    <input id='formFirst_Name' type='text' maxlength='16' name='first_name' value='$first_name' placeholder="4 to 16 characters"
+    ><span id='info'></span><br>
+    <span class='fieldname'>Last Name</span>
+    <input id='formLast_Name' type='text' maxlength='16' name='last_name' value='$last_name' placeholder="4 to 16 characters"
+    ><span id='info'></span><br>
     <span class='fieldname'>Username</span>
     <input id='formUser' type='text' maxlength='16' name='user' value='$user' placeholder="4 to 16 characters"
     ><span id='info'></span><br>

@@ -17,6 +17,7 @@
     
     echo "<h3>$name Profile</h3>";
     showProfile($view);
+
     echo "<a class='button' href='messages.php?view=$view'>" .
          "Write $view a message</a><br><br>";
     $messages = getMessages($view,null,0);
@@ -49,9 +50,17 @@
 
   $result = queryMysql("SELECT user FROM members ORDER BY user");
   $num    = $result->num_rows;
+  /* SEARCH BOX */  
+
+  echo " <div id='search-box' align='center'>
+         <form action='search.php' method='post' name='search' id='search'> 
+          Search: <input type='text' name='search' placeholder='search..'/> 
+          <input type='submit' value='Submit' /> 
+          </form></div>";
 
   echo "<h3>Other Members</h3><ul>";
 
+  /* SEARCH BOX */
   for ($j = 0 ; $j < $num ; ++$j)
   {
     $row = $result->fetch_array(MYSQLI_ASSOC);

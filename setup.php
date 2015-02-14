@@ -13,6 +13,8 @@
   createTable('members',
               'user VARCHAR(16),
               pass VARCHAR(255),
+              first_name VARCHAR(16),
+              last_name VARCHAR(16),
               email VARCHAR(16),
               birth DATE,
               city VARCHAR(15),
