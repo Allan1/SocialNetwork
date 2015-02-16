@@ -50,8 +50,8 @@
     ///////////////////////////////////////////////////
     showProfile($view);
 
-    echo "<a class='button' href='messages.php?view=$view'>" .
-         "Write $view a message</a><br><br>";
+    echo "</br></br><a class='button' href='messages.php?view=$view'>" .
+         "Write $view a private message</a><br><br>";
     $messages = getMessages($view,null,0);
     if ($messages->num_rows) {
       $num = $messages->num_rows;

@@ -21,6 +21,9 @@ require_once 'header.php';
     die();
   }
 
+  $first_name = "";
+  $last_name = "";
+
   if (isset($_POST['user']))
   {
     $first_name = sanitizeString($_POST['first_name']);
@@ -45,9 +48,16 @@ require_once 'header.php';
         $error = "That username already exists<br><br>";
       else
       {
-
-        queryMysql("INSERT INTO members VALUES('$user', '$pass','$first_name','$last_name','$email','$birth','$city')");
-        die("<h4>Account created</h4>Please Log in.<br><br>");
+        if(queryMysql("INSERT INTO members VALUES('$user', '$pass','$first_name','$last_name','$email','$birth','$city')")){
+          $_SESSION['user'] = $user;
+          $_SESSION['pass'] = $pass;
+          $_SESSION['message'] = "Account created! You are now logged in.";
+          ob_clean();
+          header("Location: home.php");
+          die("<h4>Account created</h4>Please Log in.<br><br>");
+        }
+        else
+          $error = "Sorry, we could not create your account. Please, try again later.";
       }
     }
   }
@@ -56,7 +66,7 @@ require_once 'header.php';
   <div class='main'><h3>Not an user yet? Please enter your details to sign up.</h3>
   <form method='post' action='index.php'>$error
     <span class='fieldname'>First Name</span>
-    <input id='formFirst_Name' type='text' maxlength='16' name='first_name' value='$first_name' placeholder="4 to 16 characters"
+    <input id='formFirst_Name' required="required" type='text' maxlength='16' name='first_name' value='$first_name' placeholder="4 to 16 characters"
     ><span id='info'></span><br>
     <span class='fieldname'>Last Name</span>
     <input id='formLast_Name' type='text' maxlength='16' name='last_name' value='$last_name' placeholder="4 to 16 characters"

@@ -49,6 +49,7 @@ li a:hover, .button:hover {
 
 .main {
   margin-left:40px;
+  margin-right:40px;
 }
 
 .info {
@@ -94,4 +95,26 @@ li a:hover, .button:hover {
   font-weight:bold;
   font-style:italic;
   font-size :20px;
+}
+
+#currentMessage{
+  height: 200px;
+  width: 60%;
+  background-color: #F0E6D1;
+  float: left;
+  padding: 15px;
+}
+#currentMessage form{
+  margin-top: 30px;
+}
+#conversation{
+  height: 80px;
+  background-color: whitesmoke;
+  overflow: auto;
+}
+#chatFriends{
+  float: left;
+  width: 20%;
+  height: 200px;
+  overflow: auto;
 }

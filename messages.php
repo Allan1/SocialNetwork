@@ -16,12 +16,56 @@
     {
       $pm   = substr(sanitizeString($_POST['pm']),0,1);
       $time = time();
+      $recip = $view;
+      if (isset($_POST['recip']) and strlen($_POST['recip'])>0) {
+        $recip = $_POST['recip'];
+      }
       queryMysql("INSERT INTO messages VALUES(NULL, '$user',
-        '$view', '$pm', $time, '$text')");
+        '$recip', '$pm', $time, '$text')");
     }
   }
-
-  if ($view != "")
+  $recip = "";
+  if($view == $user){
+    // List recent friends that user had conversation with, most recent conversation open.
+    echo "<div class='main'></br>";
+    $result = queryMysql("SELECT members.* FROM messages INNER JOIN members ON ((messages.auth = members.user and messages.recip = '{$user}') OR (messages.recip = members.user and messages.auth = '{$user}')) WHERE messages.pm=1 and members.user<>'{$user}' GROUP BY members.user ORDER BY messages.id desc");
+    $result = $result->fetch_all(MYSQLI_ASSOC);
+    // print_r($result);
+    echo "<ul id='chatFriends'>";
+    foreach ($result as $value) {
+      echo "<li>";
+      echo "<a href='#' data='".$value['user']."'>".$value['first_name']." ".$value['last_name']."</a>";
+      echo "</li>";
+    }
+    echo "</ul>";
+    echo "<div id='currentMessage'>";
+    if (count($result)>0) {
+      $currentFriend = $result[0]['user'];
+      $conversation = queryMysql("SELECT messages.* FROM messages WHERE ((messages.auth = '{$currentFriend}' and messages.recip = '{$user}') OR (messages.recip = '{$currentFriend}' and messages.auth = '{$user}')) and messages.pm=1 ORDER BY messages.id desc");
+      $conversation = $conversation->fetch_all(MYSQLI_ASSOC);
+      echo "<div id='conversation'>";
+      foreach ($conversation as $value) {
+        echo date('M jS \'y g:ia:', $value['time']);
+        echo " <a href='messages.php?view=" . $value['auth'] . "'>" . $value['auth']. "</a> ";
+        echo ": <span class='whisper'>&quot;".$value['message']. "&quot;</span> ";
+        echo "<br>";
+      }
+      echo "</div>";
+      $recip = $currentFriend;
+      echo "<form method='post' action='messages.php'>
+      Type here to leave a message:<br>
+      <textarea name='text' cols='40' rows='3'></textarea><br>
+      <input type='hidden' name='recip' value='{$recip}'>
+      <input type='hidden' name='pm' value='1'>
+      <input type='submit' value='Post Message'></form><br>";
+    }
+    else{
+      echo "No messages yet. Choose somebody from the list on the left and start a conversation!";
+    }
+    echo "</div>";
+    echo "<div style='clear:both'></div>";
+  }
+  else if ($view != "")
   {
     if ($view == $user) $name1 = $name2 = "Your";
     else
@@ -37,8 +81,7 @@
       <form method='post' action='messages.php?view=$view'>
       Type here to leave a message:<br>
       <textarea name='text' cols='40' rows='3'></textarea><br>
-      Public<input type='radio' name='pm' value='0' checked='checked'>
-      Private<input type='radio' name='pm' value='1'>
+      <input type='hidden' name='pm' value='1'>
       <input type='submit' value='Post Message'></form><br>
 _END;
 
@@ -76,8 +119,8 @@ _END;
     }
   }
 
-  if (!$num) echo "<br><span class='info'>No messages yet</span><br><br>";
-
+  // if (!$num) echo "<br><span class='info'>No messages yet</span><br><br>";
+  echo "</br>";
   echo "<br><a class='button' href='messages.php?view=$view'>Refresh messages</a></div><br>";
 ?>
   </body>
