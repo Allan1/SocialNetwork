@@ -105,7 +105,7 @@ li a:hover, .button:hover {
   padding: 15px;
 }
 #currentMessage form{
-  margin-top: 30px;
+  margin-top: 10px;
 }
 #conversation{
   height: 80px;
@@ -116,5 +116,12 @@ li a:hover, .button:hover {
   float: left;
   width: 20%;
   height: 200px;
+  overflow: auto;
+}
+#chatFriends li.selected{
+  background-color: #F0E6D1;
+}
+#formConversation textarea{
+  resize:none;
   overflow: auto;
 }

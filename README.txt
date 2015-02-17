@@ -25,7 +25,7 @@ Members: Search box
 
 Friends: Show users followed by you
 
-Messages: if roll (hue hue hue)
+Messages: send messages through javascript without refresh page
 
 Database changes: New Email field on members table (so the user can retrieve passoword if lost)
 				  Encrypt password field on members table

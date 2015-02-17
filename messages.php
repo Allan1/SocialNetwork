@@ -30,7 +30,9 @@
     echo "<div class='main'></br>";
     $result = queryMysql("SELECT members.* FROM messages INNER JOIN members ON ((messages.auth = members.user and messages.recip = '{$user}') OR (messages.recip = members.user and messages.auth = '{$user}')) WHERE messages.pm=1 and members.user<>'{$user}' GROUP BY members.user ORDER BY messages.id desc");
     $result = $result->fetch_all(MYSQLI_ASSOC);
-    // print_r($result);
+    $allFriends = getAllFriends($user);
+    $result = array_unique(array_merge($result,$allFriends), SORT_REGULAR);
+     // print_r($result);
     echo "<ul id='chatFriends'>";
     foreach ($result as $value) {
       echo "<li>";
@@ -41,26 +43,28 @@
     echo "<div id='currentMessage'>";
     if (count($result)>0) {
       $currentFriend = $result[0]['user'];
-      $conversation = queryMysql("SELECT messages.* FROM messages WHERE ((messages.auth = '{$currentFriend}' and messages.recip = '{$user}') OR (messages.recip = '{$currentFriend}' and messages.auth = '{$user}')) and messages.pm=1 ORDER BY messages.id desc");
-      $conversation = $conversation->fetch_all(MYSQLI_ASSOC);
+      $currentFriendName = $result[0]['first_name'].' '.$result[0]['last_name'];
+      $conversation = getConversation($user,$currentFriend);
+      echo "<div id='currentFriend'>Conversation with $currentFriendName (<a href='members.php?view=" . $currentFriend . "'>" . $currentFriend. "</a>)</div>";
       echo "<div id='conversation'>";
       foreach ($conversation as $value) {
-        echo date('M jS \'y g:ia:', $value['time']);
-        echo " <a href='messages.php?view=" . $value['auth'] . "'>" . $value['auth']. "</a> ";
+        echo date('d/m/Y H:i:s', $value['time']);
+        echo " " . $value['auth'];
         echo ": <span class='whisper'>&quot;".$value['message']. "&quot;</span> ";
-        echo "<br>";
+        echo "</br>";
       }
       echo "</div>";
       $recip = $currentFriend;
-      echo "<form method='post' action='messages.php'>
+      echo "<form id='formConversation' method='post' action='messages.php'>
       Type here to leave a message:<br>
       <textarea name='text' cols='40' rows='3'></textarea><br>
-      <input type='hidden' name='recip' value='{$recip}'>
+      <input id='FormRecip' type='hidden' name='recip' value='{$recip}'>
+      <input type='hidden' name='auth' value='{$user}'>
       <input type='hidden' name='pm' value='1'>
       <input type='submit' value='Post Message'></form><br>";
     }
     else{
-      echo "No messages yet. Choose somebody from the list on the left and start a conversation!";
+      echo "No messages yet. Choose somebody from your friends and start a conversation!";
     }
     echo "</div>";
     echo "<div style='clear:both'></div>";
@@ -123,5 +127,71 @@ _END;
   echo "</br>";
   echo "<br><a class='button' href='messages.php?view=$view'>Refresh messages</a></div><br>";
 ?>
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+  var user = "<?php echo($user); ?>";
+  $('#chatFriends li:first').addClass('selected')
+  $('#chatFriends a').click(function () {
+    $('#chatFriends li').removeClass('selected')
+    $(this).parent("li").addClass('selected')
+    var friend = $(this).attr('data');
+    console.log(user+' '+friend);
+    $.ajax({
+      type: "POST",
+      url: "getConversation.php",
+      data: { user: user, friend: friend }
+    })
+    .done(function( msg ) {
+      var result = JSON.parse(msg);
+      if (result['success']) {
+        console.log(result)
+        $('#currentFriend').html('Conversation with '+result['friend'][0]['first_name']+' '+result['friend'][0]['last_name']+" (<a href='members.php?view=" +result['friend'][0]['user']+ "'>"+result['friend'][0]['user']+ '</a>)');
+        $('#FormRecip').val(result['friend'][0]['user']);
+        $('#conversation').html('');
+        for(i=0;i<result['conversation'].length;i++){
+          var content = (new Date(result['conversation'][i]['time']*1000)).toLocaleString();
+          content+=' '+result['conversation'][i]['auth']+': <span class="whisper">"'+result['conversation'][i]['message']+'"</span></br>';
+          $('#conversation').append(content);
+        }
+      }
+      else{
+
+      }
+      
+    });
+  });
+
+  $('#formConversation').submit(function (event) {
+    event.preventDefault();
+    // console.log($('#formConversation textarea[name="text"]').val())
+    var time = "<?php echo(time()); ?>";
+    if($('#formConversation textarea[name="text"]').val()=="")
+      return;
+    $.ajax({
+      type: "POST",
+      url: "postMessage.php",
+      data: { 
+        auth: $('#formConversation input[name="auth"]').val(),
+        recip: $('#formConversation input[name="recip"]').val(), 
+        text: $('#formConversation textarea[name="text"]').val(),
+        time: time,
+        pm: $('#formConversation input[name="pm"]').val()
+      }
+    })
+    .done(function( msg ) {
+      console.log(msg);
+      var result = JSON.parse(msg);
+      if (result['success']) {
+        // console.log(result)
+        $('#conversation').prepend(result['fullMessage']);
+        $('#formConversation textarea[name="text"]').val("")
+      }
+      else{
+        alert('Couldn\'t post the message. Please, try again later.')
+      }
+      
+    });
+  });
+</script>
   </body>
 </html>

@@ -76,4 +76,24 @@
     $result = queryMysql("SELECT * FROM messages WHERE ".$conditions);
     return $result;
   }
+
+  function getAllFriends($user)
+  {
+    $result = queryMysql("SELECT members.* FROM friends INNER JOIN members ON ((friends.user = members.user and friends.friend = '{$user}') OR (friends.friend = members.user and members.user = '{$user}')) WHERE members.user<>'{$user}' GROUP BY members.user ORDER BY members.first_name, members.user asc");
+    $result = $result->fetch_all(MYSQLI_ASSOC);
+    return $result;
+  }
+
+  function getConversation($user,$currentFriend)
+  {
+    $conversation = queryMysql("SELECT messages.* FROM messages WHERE ((messages.auth = '{$currentFriend}' and messages.recip = '{$user}') OR (messages.recip = '{$currentFriend}' and messages.auth = '{$user}')) and messages.pm=1 ORDER BY messages.id desc");
+    $conversation = $conversation->fetch_all(MYSQLI_ASSOC);
+    return $conversation;
+  }
+
+  function getUser($user)
+  {
+    $result = queryMysql("SELECT members.* FROM members WHERE members.user = '{$user}'");
+    return $result->fetch_all(MYSQLI_ASSOC);
+  }
 ?>
