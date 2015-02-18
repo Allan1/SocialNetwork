@@ -7,7 +7,8 @@
   define('DS', '/');
   define("IMG_PATH", 'img'.DS);
   define("PROFILE_PICS_PATH", IMG_PATH.'profile_pics'.DS);
-
+  date_default_timezone_set('GMT');
+  
   $connection = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
   if ($connection->connect_error) die($connection->connect_error);
 
@@ -96,7 +97,9 @@
     $num    = $conversation->num_rows;
     for ($j = 0 ; $j < $num ; ++$j)
     {
-      $rows[] = $conversation->fetch_array(MYSQLI_ASSOC);
+      $aux = $conversation->fetch_array(MYSQLI_ASSOC);
+      $aux['time'] = date('d/m/Y H:i:s', $aux['time']);
+      $rows[] = $aux;
     }
     $conversation = $rows;
     return $conversation;

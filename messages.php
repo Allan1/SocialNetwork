@@ -54,10 +54,11 @@
       $currentFriend = $result[0]['user'];
       $currentFriendName = $result[0]['first_name'].' '.$result[0]['last_name'];
       $conversation = getConversation($user,$currentFriend);
+      echo "<button id='refreshConversation' data='$currentFriend'>Refresh conversation</button>";
       echo "<div id='currentFriend'>Conversation with $currentFriendName (<a href='members.php?view=" . $currentFriend . "'>" . $currentFriend. "</a>)</div>";
       echo "<div id='conversation'>";
       foreach ($conversation as $value) {
-        echo date('d/m/Y H:i:s', $value['time']);
+        echo $value['time'];
         echo " " . $value['auth'];
         echo ": <span class='whisper'>&quot;".$value['message']. "&quot;</span> ";
         echo "</br>";
@@ -71,6 +72,7 @@
       <input type='hidden' name='auth' value='{$user}'>
       <input type='hidden' name='pm' value='1'>
       <input type='submit' value='Post Message'></form><br>";
+
     }
     else{
       echo "No messages yet. Choose somebody from your friends and start a conversation!";
@@ -139,12 +141,7 @@ _END;
 <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
   var user = "<?php echo($user); ?>";
-  $('#chatFriends li:first').addClass('selected')
-  $('#chatFriends a').click(function () {
-    $('#chatFriends li').removeClass('selected')
-    $(this).parent("li").addClass('selected')
-    var friend = $(this).attr('data');
-    console.log(user+' '+friend);
+  function refreshConversation (user,friend) {
     $.ajax({
       type: "POST",
       url: "getConversation.php",
@@ -158,16 +155,31 @@ _END;
         $('#FormRecip').val(result['friend'][0]['user']);
         $('#conversation').html('');
         for(i=0;i<result['conversation'].length;i++){
-          var content = (new Date(result['conversation'][i]['time']*1000)).toLocaleString();
+          var content = result['conversation'][i]['time'];
           content+=' '+result['conversation'][i]['auth']+': <span class="whisper">"'+result['conversation'][i]['message']+'"</span></br>';
           $('#conversation').append(content);
         }
       }
       else{
-
+        alert('Couldn\'t refresh conversation');      
       }
       
     });
+  }
+  
+  $('#chatFriends li:first').addClass('selected')
+  
+  $('#chatFriends a').click(function () {
+    $('#chatFriends li').removeClass('selected')
+    $(this).parent("li").addClass('selected')
+    var friend = $(this).attr('data');
+    console.log(user+' '+friend);
+    refreshConversation(user,friend);
+    $('#refreshConversation').attr('data',friend);
+  });
+  
+  $('#refreshConversation').click(function () {
+    refreshConversation(user,$(this).attr('data'));
   });
 
   $('#formConversation').submit(function (event) {
