@@ -11,13 +11,13 @@
   require_once 'functions.php';
 
   createTable('members',
-              'user VARCHAR(16),
+              'user VARCHAR(20),
               pass VARCHAR(255),
               first_name VARCHAR(16),
               last_name VARCHAR(16),
-              email VARCHAR(16),
+              email VARCHAR(50),
               birth DATE,
-              city VARCHAR(15),
+              city VARCHAR(30),
               INDEX(user(6))');
 
   createTable('messages', 

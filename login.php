@@ -21,7 +21,7 @@
       else
       {
         $_SESSION['user'] = $user;
-        $_SESSION['pass'] = $pass;
+        // $_SESSION['pass'] = $pass;
         $_SESSION['message'] = "You are now logged in.";
         ob_clean();
         header("Location: home.php");

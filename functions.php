@@ -38,7 +38,7 @@
 
   function logout(){
     $_SESSION['user'] = null;
-    $_SESSION['pass'] = null;
+    // $_SESSION['pass'] = null;
   }
 
   function sanitizeString($var)

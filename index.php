@@ -31,7 +31,7 @@ require_once 'header.php';
     $user = sanitizeString($_POST['user']);
     $pass = sanitizeString($_POST['pass']);
     $passConf = sanitizeString($_POST['passConf']);
-    $birth = $_POST['birth'];
+    $birth = stringDateToDate($_POST['birth']);
     $email = $_POST['email'];
     $city  = sanitizeString($_POST['city']);
 
@@ -52,7 +52,7 @@ require_once 'header.php';
         if(queryMysql("INSERT INTO members VALUES('$user', '$hashedPW','$first_name','$last_name','$email','$birth','$city')")){
           queryMysql("INSERT INTO profiles VALUES('$user', '')");
           $_SESSION['user'] = $user;
-          $_SESSION['pass'] = $pass;
+          // $_SESSION['pass'] = $pass;
           $_SESSION['message'] = "Account created! You are now logged in.";
           ob_clean();
           header("Location: home.php");
@@ -69,10 +69,10 @@ require_once 'header.php';
   <form method='post' action='index.php'>$error
     <span class='fieldname'>First Name</span>
     <input id='formFirst_Name' required="required" type='text' maxlength='16' name='first_name' value='$first_name' placeholder="4 to 16 characters"
-    ><span id='info'></span><br>
+    ><br>
     <span class='fieldname'>Last Name</span>
     <input id='formLast_Name' type='text' maxlength='16' name='last_name' value='$last_name' placeholder="4 to 16 characters"
-    ><span id='info'></span><br>
+    ><br>
     <span class='fieldname'>Username</span>
     <input id='formUser' type='text' maxlength='16' name='user' value='$user' placeholder="4 to 16 characters"
     ><span id='info'></span><br>
@@ -85,9 +85,11 @@ require_once 'header.php';
     value='$pass'>
     <span id='infoPassConf'></span><br>
     <span class='fieldname'>Birthdate</span>
-    <input id='birth' type='date' name='birth'><br>
+    <input id='birth' type='text' name='birth' required="required">
+    <span id='infoBirth'></span><br>
     <span class='fieldname'>Email</span>
-    <input id='email' type='text' placeholder="email@example.com" name='email'><br>
+    <input id='email' type='text' placeholder="email@example.com" name='email'>
+    <span id='infoEmail'></span><br>
     <span class='fieldname'>City</span>
     <input id='city' type='text' name='city'><br>
     <input id='formSubmit' type='submit' value='Sign up' disabled>
@@ -101,7 +103,7 @@ _END;
   {
     if (user.value == '')
     {
-      O('info').innerHTML = ''
+      // O('info').innerHTML = ''
       return
     }
     console.log(user);
@@ -119,12 +121,12 @@ _END;
           if (this.responseText != null){
             console.log(this.responseText);
             if (this.responseText == 'taken') {
-              O('info').innerHTML = "<span class='taken'>&nbsp;&#x2718; This username is taken</span>";
+              // O('info').innerHTML = "<span class='taken'>&nbsp;&#x2718; This username is taken</span>";
               $('#formUser').removeClass('valid');
               validateFormActivateSubmit();
             }
             else if(this.responseText == 'available'){
-              O('info').innerHTML = "";
+              // O('info').innerHTML = "";
               $('#formUser').addClass('valid');
               $('#formUser').removeClass('invalid');
               validateFormActivateSubmit();
@@ -150,7 +152,7 @@ _END;
   }
 
   function validateFormActivateSubmit () {
-    if ($('#formUser').hasClass('valid') && $('#formPass').hasClass('valid') && $('#formPassConf').hasClass('valid')) {
+    if ($('#formUser').hasClass('valid') && $('#formPass').hasClass('valid') && $('#formPassConf').hasClass('valid') && $('#birth').hasClass('valid') && $('#email').hasClass('valid')) {
       $('#formSubmit').removeAttr('disabled');
     }
     else
@@ -184,6 +186,30 @@ _END;
         $(this).addClass('valid');
       validateFormActivateSubmit();
     });
+    $('#birth').bind('keyup blur',function () {
+      // var myDate = Date.parseExact($(this).value, "dd/mm/yyyy"); 
+      // var v = 
+      if (!this.value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)) {
+        $(this).removeClass('valid');
+        $(this).addClass('invalid');
+      }
+      else{
+        $(this).removeClass('invalid');
+        $(this).addClass('valid');
+      }
+      validateFormActivateSubmit();
+    })
+    $('#email').bind('keyup blur',function  () {
+      if(this.value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm)){
+        $(this).removeClass('invalid');
+        $(this).addClass('valid');
+      }
+      else{
+       $(this).removeClass('valid');
+        $(this).addClass('invalid'); 
+      }
+      validateFormActivateSubmit();
+    })
   })
 </script>
 </body>
