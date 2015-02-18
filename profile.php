@@ -6,24 +6,42 @@
   echo "<div class='main'><h3>Your Profile</h3>";
 
   $result = queryMysql("SELECT * FROM profiles WHERE user='$user'");
-    
+  $result2 = queryMysql("SELECT * FROM members WHERE user='$user'");
+  
+
+  
   if (isset($_POST['text']))
   {
+
     $text = sanitizeString($_POST['text']);
+    $first_name = sanitizeString($_POST['first_name']);
+    $last_name = sanitizeString($_POST['last_name']);
+    $birth = $_POST['birth'];
+    $email = $_POST['email'];
+    $city  = sanitizeString($_POST['city']);    
     $text = preg_replace('/\s\s+/', ' ', $text);
 
-    if ($result->num_rows)
+    if ($result->num_rows) {
          queryMysql("UPDATE profiles SET text='$text' where user='$user'");
-    else queryMysql("INSERT INTO profiles VALUES('$user', '$text')");
+         queryMysql("UPDATE members SET first_name='$first_name', last_name= '$last_name', birth = '$birth', email='$email',city='$city'  where user='$user'");
+        };
   }
   else
   {
     if ($result->num_rows)
     {
       $row  = $result->fetch_array(MYSQLI_ASSOC);
+      $row2 = $result2->fetch_array(MYSQLI_ASSOC);
+      $first_name = stripslashes($row2['first_name']);
+      $last_name =  stripslashes($row2['last_name']);
+      $birth = $row2['birth'];
+      $email = stripslashes($row2['email']);
+      $city = stripslashes($row2['city']);
       $text = stripslashes($row['text']);
     }
-    else $text = "";
+    else {
+      $text = "";
+    }
   }
 
   $text = stripslashes(preg_replace('/\s\s+/', ' ', $text));
@@ -82,6 +100,11 @@
     <form method='post' action='profile.php' enctype='multipart/form-data'>
     <h3>Enter or edit your details and/or upload an image</h3>
     <textarea name='text' cols='50' rows='3'>$text</textarea><br>
+    First name: <input type='text' name='first_name' value=$first_name /><br>
+    Last name: <input type='text' name='last_name' value=$last_name /><br>
+    Birth: <input type='text' name='birth' value=$birth /><br>
+    Email:  <input type='text' name='email' value=$email  /><br>
+    City: <input type='text' name='city' value=$city /><br>
     Image: <input type='file' name='image' size='14'>
     <input type='submit' value='Save Profile'>
     </form>

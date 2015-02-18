@@ -50,6 +50,7 @@ require_once 'header.php';
       {
         $hashedPW = hash('sha256', $pass);
         if(queryMysql("INSERT INTO members VALUES('$user', '$hashedPW','$first_name','$last_name','$email','$birth','$city')")){
+          queryMysql("INSERT INTO profiles VALUES('$user', '')");
           $_SESSION['user'] = $user;
           $_SESSION['pass'] = $pass;
           $_SESSION['message'] = "Account created! You are now logged in.";

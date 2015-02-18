@@ -33,7 +33,7 @@
     }
     die("</div></body></html>");
   }
-  echo "<h3 align='center'>Search Results</h3><ul>";
+  echo "<h3 align='center'>Search Results</h3>";
 
   if (isset($_POST['search'])) {
     if (strpos($_POST['search'],'@') !== false) {
@@ -44,7 +44,8 @@
         $row = $result->fetch_array(MYSQLI_ASSOC);
         if ($row['user'] == $user) continue;
         $u = $row['user'];
-        echo "<a href='members.php?view=".$u."'>".$u."</a>"; }
+        echo "<a href='members.php?view=".$u."'>".$u."</a>";
+        }
       } else {
         $query = sanitizeString($_POST['search']);
         $result= queryMysql("SELECT user FROM members WHERE user LIKE '%$query%'");
@@ -57,10 +58,10 @@
           $u = $row['user'];
           $pic_path = PROFILE_PICS_PATH.$u.'.jpg';
           if (file_exists($pic_path))
-            echo "<li><img src='$pic_path' style='float:left;width:40px;height:40px'><a href='members.php?view=".$u."'>".$u."</a></li>";
+            echo "<li><img src='$pic_path' style='width:40px;height:40px'><a href='members.php?view=".$u."'>".$u."</a></li>";
           //echo "<a href='members.php?view=".$u."'>".$u."</a></li>"; 
         }
-        echo "</ul>";
+        echo "";
 
       }
 
