@@ -31,6 +31,7 @@
     //echo $user;
     $result = queryMysql("SELECT members.* FROM messages INNER JOIN members ON ((messages.auth = members.user and messages.recip = '{$user}') OR (messages.recip = members.user and messages.auth = '{$user}')) WHERE messages.pm=1 and members.user<>'{$user}' GROUP BY members.user ORDER BY messages.id desc");
     $num    = $result->num_rows;
+    $rows = array();
     for ($j = 0 ; $j < $num ; ++$j)
     {
       $rows[] = $result->fetch_array(MYSQLI_ASSOC);

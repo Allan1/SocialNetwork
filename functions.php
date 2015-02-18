@@ -2,7 +2,7 @@
   $dbhost  = 'localhost';       // Unlikely to require changing
   $dbname  = 'social';           // Modify these...
   $dbuser  = 'root';           // ...variables according
-  $dbpass  = 'root';           // ...to your installation
+  $dbpass  = '';           // ...to your installation
   $appname = "Social Network";  // ...and preference
   define('DS', '/');
   define("IMG_PATH", 'img'.DS);
@@ -81,6 +81,7 @@
   {
     $result = queryMysql("SELECT members.* FROM friends INNER JOIN members ON ((friends.user = members.user and friends.friend = '{$user}') OR (friends.friend = members.user and members.user = '{$user}')) WHERE members.user<>'{$user}' GROUP BY members.user ORDER BY members.first_name, members.user asc");
     $num    = $result->num_rows;
+    $rows = array();
     for ($j = 0 ; $j < $num ; ++$j)
     {
       $rows[] = $result->fetch_array(MYSQLI_ASSOC);

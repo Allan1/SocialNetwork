@@ -33,12 +33,14 @@
   $result = queryMysql("SELECT messages.* FROM messages INNER JOIN friends ON messages.recip=friends.user WHERE friends.friend='$user' AND messages.pm=0 ORDER BY messages.id desc");
   $result2 = queryMysql("SELECT messages.* FROM messages WHERE messages.pm=0 and (messages.recip='$user' OR messages.auth='$user') ORDER BY messages.id desc");
   $num    = $result->num_rows;
-    for ($j = 0 ; $j < $num ; ++$j)
-    {
-      $rows[] = $result->fetch_array(MYSQLI_ASSOC);
-    }
+  $rows = array();
+  for ($j = 0 ; $j < $num ; ++$j)
+  {
+    $rows[] = $result->fetch_array(MYSQLI_ASSOC);
+  }
   $result = $rows;
   $num    = $result2->num_rows;
+  $rows2 = array();
     for ($j = 0 ; $j < $num ; ++$j)
     {
       $rows2[] = $result2->fetch_array(MYSQLI_ASSOC);
