@@ -104,6 +104,12 @@
   function getUser($user)
   {
     $result = queryMysql("SELECT members.* FROM members WHERE members.user = '{$user}'");
-    return $result->fetch_all(MYSQLI_ASSOC);
+    $num    = $result->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows[] = $result->fetch_array(MYSQLI_ASSOC);
+    }
+    $result = $rows;
+    return $result;
   }
 ?>

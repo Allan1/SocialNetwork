@@ -32,8 +32,18 @@
   
   $result = queryMysql("SELECT messages.* FROM messages INNER JOIN friends ON messages.recip=friends.user WHERE friends.friend='$user' AND messages.pm=0 ORDER BY messages.id desc");
   $result2 = queryMysql("SELECT messages.* FROM messages WHERE messages.pm=0 and (messages.recip='$user' OR messages.auth='$user') ORDER BY messages.id desc");
-  $result = ($result->fetch_all(MYSQLI_ASSOC));
-  $result2 = ($result2->fetch_all(MYSQLI_ASSOC));
+  $num    = $result->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows[] = $result->fetch_array(MYSQLI_ASSOC);
+    }
+  $result = $rows;
+  $num    = $result2->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows2[] = $result2->fetch_array(MYSQLI_ASSOC);
+    }
+    $result2 = $rows2;
   $results = array_merge($result,$result2);
 
   function cmp($a,$b){

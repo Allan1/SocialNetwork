@@ -48,7 +48,8 @@ require_once 'header.php';
         $error = "That username already exists<br><br>";
       else
       {
-        if(queryMysql("INSERT INTO members VALUES('$user', '$pass','$first_name','$last_name','$email','$birth','$city')")){
+        $hashedPW = hash('sha256', $pass);
+        if(queryMysql("INSERT INTO members VALUES('$user', '$hashedPW','$first_name','$last_name','$email','$birth','$city')")){
           $_SESSION['user'] = $user;
           $_SESSION['pass'] = $pass;
           $_SESSION['message'] = "Account created! You are now logged in.";
