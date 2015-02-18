@@ -66,7 +66,7 @@ label {
 }
 </style>
 <?php // Example 26-2: header.php
-  
+  date_default_timezone_set('GMT');
 
   session_start();
 
