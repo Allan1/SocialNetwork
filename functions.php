@@ -2,7 +2,7 @@
   $dbhost  = 'localhost';       // Unlikely to require changing
   $dbname  = 'social';           // Modify these...
   $dbuser  = 'root';           // ...variables according
-  $dbpass  = '';           // ...to your installation
+  $dbpass  = 'root';           // ...to your installation
   $appname = "Social Network";  // ...and preference
   define('DS', '/');
   define("IMG_PATH", 'img'.DS);
@@ -80,14 +80,24 @@
   function getAllFriends($user)
   {
     $result = queryMysql("SELECT members.* FROM friends INNER JOIN members ON ((friends.user = members.user and friends.friend = '{$user}') OR (friends.friend = members.user and members.user = '{$user}')) WHERE members.user<>'{$user}' GROUP BY members.user ORDER BY members.first_name, members.user asc");
-    $result = $result->fetch_all(MYSQLI_ASSOC);
+    $num    = $result->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows[] = $result->fetch_array(MYSQLI_ASSOC);
+    }
+    $result = $rows;
     return $result;
   }
 
   function getConversation($user,$currentFriend)
   {
     $conversation = queryMysql("SELECT messages.* FROM messages WHERE ((messages.auth = '{$currentFriend}' and messages.recip = '{$user}') OR (messages.recip = '{$currentFriend}' and messages.auth = '{$user}')) and messages.pm=1 ORDER BY messages.id desc");
-    $conversation = $conversation->fetch_all(MYSQLI_ASSOC);
+    $num    = $conversation->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows[] = $conversation->fetch_array(MYSQLI_ASSOC);
+    }
+    $conversation = $rows;
     return $conversation;
   }
 

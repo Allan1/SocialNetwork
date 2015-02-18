@@ -11,7 +11,8 @@
         $_SESSION['message'] = "<span class='error'>Not all fields were entered</span>";
     else
     {
-      $result = queryMySQL("SELECT user,pass FROM members WHERE user='$user' AND pass='$pass'");
+      $hashedPW = hash('sha256', $pass);
+      $result = queryMySQL("SELECT user,pass FROM members WHERE user='$user' AND pass='$hashedPW'");
 
       if ($result->num_rows == 0)
       {

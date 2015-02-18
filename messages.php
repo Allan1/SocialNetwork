@@ -28,11 +28,19 @@
   if($view == $user){
     // List recent friends that user had conversation with, most recent conversation open.
     echo "<div class='main'></br>";
+    //echo $user;
     $result = queryMysql("SELECT members.* FROM messages INNER JOIN members ON ((messages.auth = members.user and messages.recip = '{$user}') OR (messages.recip = members.user and messages.auth = '{$user}')) WHERE messages.pm=1 and members.user<>'{$user}' GROUP BY members.user ORDER BY messages.id desc");
-    $result = $result->fetch_all(MYSQLI_ASSOC);
+    $num    = $result->num_rows;
+    for ($j = 0 ; $j < $num ; ++$j)
+    {
+      $rows[] = $result->fetch_array(MYSQLI_ASSOC);
+    }
+    $result = $rows;
+    //echo $user;
     $allFriends = getAllFriends($user);
     $result = array_unique(array_merge($result,$allFriends), SORT_REGULAR);
-     // print_r($result);
+    //print_r($result);
+    
     echo "<ul id='chatFriends'>";
     foreach ($result as $value) {
       echo "<li>";
