@@ -103,7 +103,7 @@ label {
         <li><a href='home.php'>Home</a></li>
         <li><a href='members.php'>Members</a></li>
         <li><a href='friends.php'>Friends</a></li>
-        <li><a href='messages.php'>Messages</a></li>
+        <li><a href='messages.php'>Private Messages</a></li>
         <li><a href='profile.php'>Edit Profile</a></li>
         <li><a href='logout.php'>Log out</a></li>
       </ul>

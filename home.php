@@ -6,6 +6,8 @@
     die();
   }
 
+  echo "<div class='main'>";
+
   if (isset($_POST['text']) and strlen($_POST['text'])>0) {
     $_POST['text'] = sanitizeString($_POST['text']);
     $pm   = substr(sanitizeString($_POST['pm']),0,1);
@@ -19,7 +21,15 @@
       echo "<span>Couldn't post the message. Please, try again.</span>";
   }
 
-  echo "<div class='main'>";
+  if (isset($_POST['erase']))
+  {
+    $erase = sanitizeString($_POST['erase']);
+    $r2 = queryMysql("DELETE FROM messages WHERE id=$erase AND recip='$user'");
+    if($r2)
+      echo "<span>Message deleted successfully</span>";
+    else
+      echo "<span>Couldn't delete the message. Please, try again.</span>";
+  }
 
   showProfile($user);
   echo "<span>
@@ -70,9 +80,23 @@
     echo " <a href='members.php?view=" . $row['auth'] . "'>" . $row['auth']. "</a> ";
     echo "wrote on ";
     echo " <a href='members.php?view=" . $row['recip'] . "'>" . $row['recip']. "</a> ";
-    echo "'s wall: &quot;" . $row['message'] . "&quot; </br>";      
+    echo "'s wall: &quot;" . $row['message'] . "&quot;";
+    if ($row['recip'] == $user){
+      $id = $row["id"];
+      echo "<button class='deleteMessage' data='$id'>delete</button>";
+      echo "<form id='message$id' method='post' action='home.php'>
+      <input type='hidden' name='erase' value='{$id}'>
+      </form>";
+    }
+    echo "</br>";
   }
 ?>
   </div>
+  <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript">
+    $('.deleteMessage').click(function  () {
+      $('#message'+$(this).attr('data')).submit();
+    })
+  </script>
   </body>
 </html>

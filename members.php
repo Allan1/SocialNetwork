@@ -6,6 +6,14 @@
     die();
   }
 
+  if (isset($_POST['text']) && strlen($_POST['text'])>0) {
+    $time = time();
+    $pm   = substr(sanitizeString($_POST['pm']),0,1);
+    $text = sanitizeString($_POST['text']);
+    $recip = $_POST['recip'];
+    queryMysql("INSERT INTO messages VALUES(NULL, '$user','$recip', '$pm', $time, '$text')");
+  }
+
   echo "<div class='main'>";
   if (isset($_GET['add']))
   {
@@ -49,7 +57,14 @@
     else      echo " [<a href='members.php?remove=".$view . "&view=".$view."'>drop</a>]</li>";
     ///////////////////////////////////////////////////
     showProfile($view);
-
+    echo "<span>
+    <form method='post' action='members.php?view=$view'>
+      Post something on $view's wall <input type='submit' value='Post'><br>
+      <textarea name='text' cols='40' rows='3' style='resize:none'></textarea><br>
+      <input type='hidden' name='pm' value='0' checked='checked'>
+      <input type='hidden' name='recip' value='$view'>
+      </form><br>
+  </span>";
     echo "</br></br><a class='button' href='messages.php?view=$view'>" .
          "Write $view a private message</a><br><br>";
     $messages = getMessages($view,null,0);

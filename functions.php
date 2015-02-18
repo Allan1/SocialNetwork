@@ -2,7 +2,7 @@
   $dbhost  = 'localhost';       // Unlikely to require changing
   $dbname  = 'social';           // Modify these...
   $dbuser  = 'root';           // ...variables according
-  $dbpass  = 'root';           // ...to your installation
+  $dbpass  = '';           // ...to your installation
   $appname = "Social Network";  // ...and preference
   define('DS', '/');
   define("IMG_PATH", 'img'.DS);
@@ -57,11 +57,19 @@
       echo "<img src='$pic_path' style='float:left;'>";
 
     $result = queryMysql("SELECT * FROM profiles WHERE user='$user'");
-
+    $result2 = queryMysql("SELECT * FROM members WHERE user='$user'");
+    echo "</br>";
     if ($result->num_rows)
     {
       $row = $result->fetch_array(MYSQLI_ASSOC);
-      echo stripslashes($row['text']) . "<br style='clear:left;'><br>";
+      echo 'About me: '.stripslashes($row['text']) . "</br>";
+    }
+    if ($result2->num_rows)
+    {
+      $row = $result2->fetch_array(MYSQLI_ASSOC);
+      if($row['birth']!='0000-00-00')
+        echo 'Born in '.dateToStringDate($row['birth']) . "</br>";
+      echo "City: ".$row['city']."</br>";
     }
   }
 
@@ -74,7 +82,7 @@
     if ($pm!==null) {
       $conditions.= "and pm='$pm'";
     }
-    $result = queryMysql("SELECT * FROM messages WHERE ".$conditions);
+    $result = queryMysql("SELECT * FROM messages WHERE ".$conditions." ORDER BY messages.id desc");
     return $result;
   }
 
@@ -115,5 +123,29 @@
     }
     $result = $rows;
     return $result;
+  }
+
+  function isDate($value)
+  {
+    // echo preg_match("/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/", $value);
+    return preg_match("^\\d{1,2}/\\d{2}/\\d{4}^", $value);
+  }
+
+  function stringDateToDate($value)
+  {
+    if (isDate($value)) {
+      $date = DateTime::createFromFormat('d/m/Y', $value);
+      return $date->format('Y-m-d');
+    }
+    return null;
+  }
+
+  function dateToStringDate($value)
+  {
+    if ($value=='0000-00-00') {
+      return '';
+    }
+    $date = DateTime::createFromFormat('Y-m-d', $value);
+    return $date->format('d/m/Y');
   }
 ?>
